@@ -1,7 +1,7 @@
 <?php
-// Process delete operation after confirmation
+// PROCESSO DELETAR ARQUIVO
 if(isset($_POST["id"]) && !empty($_POST["id"])){
-    // Include config file
+    // CONEXÃO
     require_once "config.php";
     
     // Prepare a delete statement
@@ -16,7 +16,7 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
         
         // Attempt to execute the prepared statement
         if(mysqli_stmt_execute($stmt)){
-            // Records deleted successfully. Redirect to landing page
+            // DELETADO, REDIRECIONA PARA INDEX
             header("location: index.php");
             exit();
         } else{
@@ -27,12 +27,12 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
     // Close statement
     mysqli_stmt_close($stmt);
     
-    // Close connection
+    // FECHA CONEXÃO
     mysqli_close($link);
 } else{
-    // Check existence of id parameter
+    // CHECAR ID PARÂMETRO
     if(empty(trim($_GET["id"]))){
-        // URL doesn't contain id parameter. Redirect to error page
+        // URL NÃO TEM OS PAÂMETROS DA ID, REDIRECIONA PARA PAGINA ERROR
         header("location: error.php");
         exit();
     }

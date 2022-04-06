@@ -3,8 +3,8 @@
 require_once "config.php";
  
 // Define variables and initialize with empty values
-$name = $email = $cro = "";
-$name_err = $email_err = $cro_err = "";
+$name = $email = $cro = $cro_uf = "";
+$name_err = $email_err = $cro_err = $cro_uf_err = "";
  
 // Processing form data when form is submitted
 if(isset($_POST["id"]) && !empty($_POST["id"])){
@@ -38,20 +38,31 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
     } else{
         $cro = $input_cro;
     }
+
+     // Validate uf
+    $input_cro_uf = trim($_POST["cro_uf"]);
+    if(empty($input_cro_uf)){
+        $cro_uf_err = "Insira a UF.";     
+    } elseif(!ctype_digit($input_cro_uf)){
+        $cro_uf_err = "UF Inválido.";
+    } else{
+        $cro_uf = $input_cro_uf;
+    }
     
     // Check input errors before inserting in database
-    if(empty($name_err) && empty($email_err) && empty($cro_err)){
+    if(empty($name_err) && empty($email_err) && empty($cro_err) && empty($cro_uf_err)){
         // Prepare an update statement
-        $sql = "UPDATE dentistas SET name=?, email=?, cro=? WHERE id=?";
+        $sql = "UPDATE dentistas SET name=?, email=?, cro=?, cro_uf=? WHERE id=?";
          
         if($stmt = mysqli_prepare($link, $sql)){
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "sssi", $param_name, $param_email, $param_cro, $param_id);
+            mysqli_stmt_bind_param($stmt, "sssi", $param_name, $param_email, $param_cro, $param_cro_uf, $param_id);
             
             // Set parameters
             $param_name = $name;
             $param_email = $email;
             $param_cro = $cro;
+            $param_cro_uf = $cro_uf;
             $param_id = $id;
             
             // Attempt to execute the prepared statement
@@ -98,6 +109,7 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
                     $name = $row["name"];
                     $email = $row["email"];
                     $cro = $row["cro"];
+                    $cro_uf = $row["cro_uf"];
                 } else{
                     // URL doesn't contain valid id. Redirect to error page
                     header("location: error.php");
@@ -157,6 +169,11 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
                             <label>CRO</label>
                             <input type="text" name="cro" class="form-control <?php echo (!empty($cro_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $cro; ?>">
                             <span class="invalid-feedback"><?php echo $cro_err;?></span>
+                        </div>
+                        <div class="form-group">
+                            <label>UF</label>
+                            <input type="text" name="cro_uf" class="form-control <?php echo (!empty($cro_uf_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $cro_uf; ?>">
+                            <span class="invalid-feedback"><?php echo $cro_uf_err;?></span>
                         </div>
                         <input type="hidden" name="id" value="<?php echo $id; ?>"/>
                         <input type="submit" class="btn btn-primary" value="Submit">

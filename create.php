@@ -3,8 +3,8 @@
 require_once "config.php";
  
 // Define variables and initialize with empty values
-$name = $email = $cro = "";
-$name_err = $email_err = $cro_err = "";
+$name = $email = $cro = $cro_uf = "";
+$name_err = $email_err = $cro_err = $cro_uf_err = "";
  
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -35,20 +35,31 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     } else{
         $cro = $input_cro;
     }
+
+    // valida cro_uf
+    $input_cro_uf = trim($_POST["cro_uf"]);
+    if(empty($input_cro_uf)){
+        $cro_err = "Insira o UF do CRO.";     
+    } elseif(!ctype_digit($input_cro)){
+        $cro_err = "UF Inválido.";
+    } else{
+        $cro_uf = $input_cro_uf;
+    }
     
     // Check input errors before inserting in database
-    if(empty($name_err) && empty($email_err) && empty($cro_err)){
+    if(empty($name_err) && empty($email_err) && empty($cro_err) && empty($cro_uf_err)){
         // Prepare an insert statement
-        $sql = "INSERT INTO dentistas (name, email, cro) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO dentistas (name, email, cro, cro_uf) VALUES (?, ?, ?, ?)";
          
         if($stmt = mysqli_prepare($link, $sql)){
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "sss", $param_name, $param_email, $param_cro);
+            mysqli_stmt_bind_param($stmt, "ssss", $param_name, $param_email, $param_cro, $param_cro_uf);
             
             // Set parameters
             $param_name = $name;
             $param_email = $email;
             $param_cro = $cro;
+            $param_cro_uf = $cro_uf;
             
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt)){
@@ -104,6 +115,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                             <label>CRO</label>
                             <input type="text" name="cro" class="form-control <?php echo (!empty($cro_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $cro; ?>">
                             <span class="invalid-feedback"><?php echo $cro_err;?></span>
+                        </div>
+                        <div class="form-group">
+                            <label>CRO UF</label>
+                            <input type="text" name="cro_uf" class="form-control <?php echo (!empty($cro_uf_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $cro_uf; ?>">
+                            <span class="invalid-feedback"><?php echo $cro_uf_err;?></span>
                         </div>
                         <input type="submit" class="btn btn-primary" value="Gravar">
                         <a href="index.php" class="btn btn-danger ml-2">Cancelar</a>

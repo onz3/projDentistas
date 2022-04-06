@@ -33,40 +33,40 @@
                         <a href="create.php" class="btn btn-primary pull-right"><i class="fa fa-plus"></i>  Novo dentista</a>
                     </div>
                     <?php
-                    // Include config file
+                    // CONEXÃO
                     require_once "config.php";
                     
-                    // Attempt select query execution
+                    // SELECT QUERY
                     $sql = "SELECT * FROM dentistas";
                     if($result = mysqli_query($link, $sql)){
                         if(mysqli_num_rows($result) > 0){
                             echo '<table class="table table-bordered table-striped">';
                                 echo "<thead>";
                                     echo "<tr>";
-                                        echo "<th>#</th>";
-                                        echo "<th>Name</th>";
+                                        echo "<th>Nome</th>";
                                         echo "<th>Email</th>";
-                                        echo "<th>cro</th>";
-                                        echo "<th>Action</th>";
+                                        echo "<th>CRO</th>";
+                                        echo "<th>UF</th>";
+                                        echo "<th></th>";
                                     echo "</tr>";
                                 echo "</thead>";
                                 echo "<tbody>";
                                 while($row = mysqli_fetch_array($result)){
                                     echo "<tr>";
-                                        echo "<td>" . $row['id'] . "</td>";
                                         echo "<td>" . $row['name'] . "</td>";
                                         echo "<td>" . $row['email'] . "</td>";
                                         echo "<td>" . $row['cro'] . "</td>";
+                                        echo "<td>" . $row['cro_uf'] . "</td>";
                                         echo "<td>";
-                                            echo '<a href="read.php?id='. $row['id'] .'" class="mr-3" title="View Record" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
-                                            echo '<a href="update.php?id='. $row['id'] .'" class="mr-3" title="Update Record" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
-                                            echo '<a href="delete.php?id='. $row['id'] .'" title="Delete Record" data-toggle="tooltip"><span class="fa fa-trash"></span></a>';
+                                            echo '<a href="read.php?id='. $row['id'] .'" class="mr-3" title="Visualizar" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
+                                            echo '<a href="update.php?id='. $row['id'] .'" class="mr-3" title="Editar" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
+                                            echo '<a href="delete.php?id='. $row['id'] .'" title="Deletar" data-toggle="tooltip"><span class="fa fa-trash"></span></a>';
                                         echo "</td>";
                                     echo "</tr>";
                                 }
                                 echo "</tbody>";                            
                             echo "</table>";
-                            // Free result set
+                            // SETANDO RESULTADO
                             mysqli_free_result($result);
                         } else{
                             echo '<div class="alert alert-danger"><em>Sem registros salvos.</em></div>';
@@ -75,7 +75,7 @@
                         echo "Oops! Algo deu errado, tente mais tarde.";
                     }
  
-                    // Close connection
+                    // FECHA CONEXÃO
                     mysqli_close($link);
                     ?>
                 </div>
